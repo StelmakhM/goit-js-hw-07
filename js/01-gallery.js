@@ -1,17 +1,15 @@
 import { galleryItems } from './gallery-items.js';
 // Change code below this line
 
-// console.log(galleryItems);
-
 const refs = {
-    galleryContainer: document.querySelector('.gallery')
+    galleryContainer: document.querySelector('.gallery'),
 }
 
 const galleryMarkUp = createGalleryMarkUp(galleryItems);
 refs.galleryContainer.insertAdjacentHTML('afterbegin', galleryMarkUp);
+refs.galleryContainer.addEventListener('click', onClickOpenModal);
+let instance;
 
-
-refs.galleryContainer.addEventListener('click', onImageClick);
 
 function createGalleryMarkUp(items) {
     return items.map(({ preview, original, description } = {}) => {
@@ -30,17 +28,33 @@ function createGalleryMarkUp(items) {
         .join('')
 }
 
-function onImageClick(event) {
-    event.preventDefault();
-    createLightBox(event.target);
-}
-
-function createLightBox(img) {
-    const instance = basicLightbox.create(`
+function createModal(img) {
+    instance = basicLightbox.create(`
         <img src="${img.dataset.source}" width="800" height="600">
-    `)
+    ` ,
+        {
+            onShow: () => document.addEventListener('keydown', exitWithEscBtn),
+            onClose: () => document.removeEventListener('keydown', exitWithEscBtn)
+        })
+
     instance.show()
 }
+
+function onClickOpenModal(event) {
+    if (event.target.nodeName !== "IMG") {
+        return
+    }
+    event.preventDefault();
+    createModal(event.target);
+}
+
+function exitWithEscBtn(event) {
+    if (event.code === 'Escape') {
+        instance.close()
+    }
+}
+
+
 
 
 
