@@ -30,7 +30,7 @@ function createGalleryMarkUp(items) {
 
 function createModal(img) {
     instance = basicLightbox.create(`
-        <img src="${img.dataset.source}" width="800" height="600">
+        <img src="${img.dataset.source}" alt="${img.alt}" width="800" height="600">
     ` ,
         {
             onShow: () => document.addEventListener('keydown', exitWithEscBtn),
@@ -41,10 +41,10 @@ function createModal(img) {
 }
 
 function onClickOpenModal(event) {
+    event.preventDefault();
     if (event.target.nodeName !== "IMG") {
         return
     }
-    event.preventDefault();
     createModal(event.target);
 }
 
